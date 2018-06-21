@@ -129,6 +129,7 @@
 							// Post to server
 							var u = 'list_config.do';
 							$.ajax({
+								method: 'post',
 								url : u,
 								data: {
 									action: 'update',
@@ -193,6 +194,7 @@
 						var obj = getRowObject(tr, 'delete');
 						obj['action'] = 'delete';
 						$.ajax({
+							method: 'post',
 							url : u,
 							data: obj,
 							dataType: 'json'
@@ -218,6 +220,7 @@
 					var obj = getRowObject(tr, 'add');
 					obj['action'] = 'add';
 					$.ajax({
+						method: 'post',
 						url : u,
 						data: obj,
 						dataType: 'json'
