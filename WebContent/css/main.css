@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+/* Fix for bootstrap 4
+.glyphicon-ok:before {
+	content: "\f00c";
+}
+
+.glyphicon-remove:before {
+	content: "\f00d";
+}
+
+.glyphicon {
+	display: inline-block;
+	font: normal normal normal 14px/1 FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+*/
+
+.table-responsive {
+	max-height: 60vh;
+}

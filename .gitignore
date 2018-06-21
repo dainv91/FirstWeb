@@ -51,3 +51,7 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
+
+# Added 20180621 - DaiNV
+build/
+# Ended 20180621 - DaiNV

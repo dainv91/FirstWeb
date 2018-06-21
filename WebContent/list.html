@@ -1,0 +1,263 @@
+<html>
+	<head>
+		<!--
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+		
+		<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+		-->
+		
+		<link href="css/bootstrap-3.3.7.min.css" rel="stylesheet" />
+		<link href="css/bootstrap-editable-1.5.0.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+		
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<!-- <script src="js/popper.min.js"></script> -->
+		<!-- <script src="js/tooltip.min.js"></script> -->
+		<script src="js/bootstrap-3.3.7.min.js"></script>
+		<script src="js/bootstrap-editable-1.5.0.min.js"></script>
+		
+		<title>List configuration</title>
+		
+		<script type="text/javascript">
+			function getObjOfThTag() {
+				var selector = $('#table_config').find('thead th');
+				var obj = {};
+				
+				selector.each(function(){
+					var current = $(this).text().trim();
+					obj[current] = null;
+				});
+				
+				return obj;
+			}
+		
+			function getHtmlOfThTag(obj) {
+				var html = [];
+				html.push('<thead>');
+				html.push('<tr>');
+				for (var property in obj) {
+					if (obj.hasOwnProperty(property)) {
+						html.push('<th>');
+						html.push(property);
+						html.push('</th>');
+				    }
+				}
+				html.push('</tr>');
+				html.push('</thead>');
+				return html.join('');
+			}
+			
+			function getHtmlOfRow(obj, canEdit) {
+				var html = [];
+				html.push('<tr>');
+				for (var property in obj) {
+					if (obj.hasOwnProperty(property)) {
+						var val = obj[property];
+						html.push('<td column-name="'+ property +'">');
+						var editable = canEdit.indexOf(property) !== -1;
+						if (editable) {
+							var title = "Enter " + property;
+							var c = 'can-edit ' + 'a-' + property;
+							html.push('<a href="#" class="' + c + '" ');
+							html.push('column-name="' + property + '" ');
+							html.push('data-type="text" data-title="');
+							html.push(title);
+							html.push('">');
+							html.push(val);
+							html.push('</a>');	
+						} else {
+							html.push(val);
+						}
+						html.push('</td>');
+				    }
+				}
+				html.push('</tr>');
+				return html.join('');
+			}
+			
+			function getNewRowToAdd(canEdit) {
+				var obj = getObjOfThTag();
+				for (var property in obj) {
+					if (obj.hasOwnProperty(property)) {
+						obj[property] = '<input type="text" column-name="'+ property +'" name="' + property + '" />';
+					}
+				}
+				obj['submit-action'] = '<input type="button" class="btn btn-primary submit-new" value="Add" />';
+				return getHtmlOfRow(obj, canEdit);
+			}
+		
+			function getRowObject(tr, type) {
+				var obj = getObjOfThTag();
+				var tds = tr.find('td');
+				tds.each(function(){
+					var name = $(this).attr('column-name');
+					var value = $(this).text();
+					if (type == 'add') {
+						name = $(this).find('input[column-name]:first').attr('column-name');
+						value = $(this).find('input[column-name]:first').val();
+					}
+					obj[name] = value;
+				});
+				return obj;
+			}
+			
+			function draw_link(arr, canEdit) {
+				var selector = $('#table_config');
+				selector.html('');
+				if (!arr || arr.length == 0) {
+					return;
+				}
+				var html = [];
+				html.push(getHtmlOfThTag(arr[0]));
+				html.push('<tbody>');
+				for(var i=0, len=arr.length; i<len; i++) {
+					var row = getHtmlOfRow(arr[i], canEdit);
+					html.push(row);
+				}
+				html.push('</tbody>');
+				selector.html(html.join(''));
+				
+				// Add event
+				$('a.can-edit').each(function(){
+					var column = $(this).attr('column-name');
+					$(this).editable({
+						success: function(response, value){
+							var current = $('#current_id').val();
+							console.log("Response: " + response + ", Value: " + value + ", Current: " + current + ", Column: " + column);
+							
+							// Post to server
+							var u = 'list_config.do';
+							$.ajax({
+								url : u,
+								data: {
+									action: 'update',
+									key: current,
+									name: column,
+									value: value,
+								},
+								dataType: 'json'
+							}).done(function(result){
+								if (result != true) {
+									alert('Cannot update: ' + column + ' with value: ' + value);
+								}
+							});
+						}
+					});	
+				});
+			}
+			
+			$(document).ready(function(){
+				//$.fn.editable.defaults.mode = 'inline';
+				
+				var canEdit = [];
+				canEdit.push('value');
+				canEdit.push('dataType');
+				
+				$('#btn_load').click(function(){
+					// Call ajax load links
+					var u = 'list_config.do';
+					var force = $('#force_load').is(':checked');
+					$.ajax({
+						url : u,
+						data: {force: force},
+						dataType: 'json'
+					}).done(function(result){
+						var arr = result;
+						if (!arr) {
+							window.location.replace('index.html');
+							return;
+						}
+						draw_link(arr, canEdit);
+					});
+				});
+				
+				$('div.links').on('click', '.details a', function(){
+					$('#txt_link').val($(this).text());
+				});
+				
+				$('#btn_add').click(function(){
+					var selector = $('#table_config tbody');
+					var newRow = getNewRowToAdd(canEdit);
+					selector.append(newRow);
+					var pos = selector.find('tr:last').position().top;
+					$('.table-responsive').scrollTop(pos);
+				});
+				$('#btn_del').click(function(){
+					var selector = $('#table_config tbody tr.bg-info');
+					selector.each(function(){
+						// Post to server
+						var u = 'list_config.do';
+						
+						var tr = $(this);
+						var obj = getRowObject(tr, 'delete');
+						obj['action'] = 'delete';
+						$.ajax({
+							url : u,
+							data: obj,
+							dataType: 'json'
+						}).done(function(result){
+							if (result != true) {
+								alert('Cannot delete: ' + JSON.stringify(obj));
+								return;
+							}
+							$('#btn_load').click();
+						});
+					});
+				});
+				
+				$('#table_config').on('click', 'a.editable', function(){
+					var id = $(this).parent().parent().find('td:first').text().trim();
+					$('#current_id').val(id);
+				});
+				
+				$('#table_config').on('click', 'input.submit-new', function(){
+					// Post to server
+					var u = 'list_config.do';
+					var tr = $(this).parent().parent();
+					var obj = getRowObject(tr, 'add');
+					obj['action'] = 'add';
+					$.ajax({
+						url : u,
+						data: obj,
+						dataType: 'json'
+					}).done(function(result){
+						if (result != true) {
+							alert('Cannot insert: ' + JSON.stringify(obj));
+							return;
+						}
+						$('#btn_load').click();
+					});
+				});
+				
+				// Click
+				$('#table_config').on('click', 'tr', function(event) {
+					$(this).addClass('bg-info').siblings().removeClass('bg-info');
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>List configuration</h1>
+			<div class="form-check">
+				<input type="checkbox" class="form-check-input" id="force_load">
+    			<label class="form-check-label" for="force_load">Force load</label>
+			</div>
+			<div class="form-group links">
+				<input type="button" class="btn btn-primary btn-success" value="Re-load" id="btn_load" />
+				<input type="button" class="btn btn-primary btn-warning" value="Add new" id="btn_add" />
+				<input type="button" class="btn btn-primary btn-danger" value="Delete" id="btn_del" />
+				<hr />
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered" id="table_config">
+				</table>
+			</div>
+			<div class="hidden">
+				<input type="hidden" id="current_id" />
+			</div>
+		</div>
+	</body>
+</html>

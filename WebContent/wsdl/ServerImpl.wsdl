@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://soap.ws.iadd.vn" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://soap.ws.iadd.vn" xmlns:intf="http://soap.ws.iadd.vn" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+ <wsdl:types>
+  <schema targetNamespace="http://soap.ws.iadd.vn" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://xml.apache.org/xml-soap"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="ArrayOf_xsd_anyType">
+    <complexContent>
+     <restriction base="soapenc:Array">
+      <attribute ref="soapenc:arrayType" wsdl:arrayType="xsd:anyType[]"/>
+     </restriction>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://xml.apache.org/xml-soap" xmlns="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://soap.ws.iadd.vn"/>
+   <import namespace="http://schemas.xmlsoap.org/soap/encoding/"/>
+   <complexType name="Vector">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="item" type="xsd:anyType"/>
+    </sequence>
+   </complexType>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="getHelloWorldAsStringResponse">
+
+      <wsdl:part name="getHelloWorldAsStringReturn" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHelloWorldAsStringRequest">
+
+      <wsdl:part name="name" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHelloWorldAsListResponse">
+
+      <wsdl:part name="getHelloWorldAsListReturn" type="impl:ArrayOf_xsd_anyType">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:message name="getHelloWorldAsListRequest">
+
+      <wsdl:part name="name" type="xsd:string">
+
+      </wsdl:part>
+
+      <wsdl:part name="addr" type="xsd:string">
+
+      </wsdl:part>
+
+   </wsdl:message>
+
+   <wsdl:portType name="ServerImpl">
+
+      <wsdl:operation name="getHelloWorldAsString" parameterOrder="name">
+
+         <wsdl:input message="impl:getHelloWorldAsStringRequest" name="getHelloWorldAsStringRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHelloWorldAsStringResponse" name="getHelloWorldAsStringResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHelloWorldAsList" parameterOrder="name addr">
+
+         <wsdl:input message="impl:getHelloWorldAsListRequest" name="getHelloWorldAsListRequest">
+
+       </wsdl:input>
+
+         <wsdl:output message="impl:getHelloWorldAsListResponse" name="getHelloWorldAsListResponse">
+
+       </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="ServerImplSoapBinding" type="impl:ServerImpl">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="getHelloWorldAsString">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHelloWorldAsStringRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://soap.ws.iadd.vn" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHelloWorldAsStringResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://soap.ws.iadd.vn" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="getHelloWorldAsList">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="getHelloWorldAsListRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://soap.ws.iadd.vn" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="getHelloWorldAsListResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://soap.ws.iadd.vn" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="ServerImplService">
+
+      <wsdl:port binding="impl:ServerImplSoapBinding" name="ServerImpl">
+
+         <wsdlsoap:address location="http://localhost:8080/FirstWeb/services/ServerImpl"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

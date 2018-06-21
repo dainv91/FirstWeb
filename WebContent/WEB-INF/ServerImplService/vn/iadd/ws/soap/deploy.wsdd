@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- Use this file to deploy some handlers/chains and services      --><!-- Two ways to do this:                                           --><!--   java org.apache.axis.client.AdminClient deploy.wsdd          --><!--      after the axis server is running                          --><!-- or                                                             --><!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   --><!--      from the same directory that the Axis engine runs         --><deployment xmlns="http://xml.apache.org/axis/wsdd/" xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from ServerImplService WSDL service -->
+
+  <service name="ServerImpl" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="http://soap.ws.iadd.vn"/>
+      <parameter name="wsdlServiceElement" value="ServerImplService"/>
+      <parameter name="schemaUnqualified" value="http://soap.ws.iadd.vn,http://xml.apache.org/xml-soap"/>
+      <parameter name="wsdlServicePort" value="ServerImpl"/>
+      <parameter name="className" value="vn.iadd.ws.soap.ServerImpl"/>
+      <parameter name="wsdlPortType" value="ServerImpl"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <operation xmlns:operNS="http://soap.ws.iadd.vn" xmlns:rtns="http://www.w3.org/2001/XMLSchema" name="getHelloWorldAsString" qname="operNS:getHelloWorldAsString" returnQName="getHelloWorldAsStringReturn" returnType="rtns:string" soapAction="">
+        <parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="name" type="tns:string"/>
+      </operation>
+      <operation xmlns:operNS="http://soap.ws.iadd.vn" xmlns:rtns="http://soap.ws.iadd.vn" xmlns:tns2="http://www.w3.org/2001/XMLSchema" name="getHelloWorldAsList" qname="operNS:getHelloWorldAsList" returnQName="getHelloWorldAsListReturn" returnType="rtns:ArrayOf_xsd_anyType" returnItemType="tns2:anyType" soapAction="">
+        <parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="name" type="tns:string"/>
+        <parameter xmlns:tns="http://www.w3.org/2001/XMLSchema" qname="addr" type="tns:string"/>
+      </operation>
+      <parameter name="allowedMethods" value="getHelloWorldAsString getHelloWorldAsList"/>
+
+      <arrayMapping xmlns:ns="http://soap.ws.iadd.vn" xmlns:cmp-ns="http://www.w3.org/2001/XMLSchema" qname="ns:ArrayOf_xsd_anyType" type="java:java.lang.Object[]" innerType="cmp-ns:anyType" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+  </service>
+</deployment>

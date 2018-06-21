@@ -1,0 +1,127 @@
+<html>
+	<head>
+		<link href="css/bootstrap-3.3.7.min.css" rel="stylesheet" />
+		<link href="css/bootstrap-editable-1.5.0.css" rel="stylesheet" />
+		<link href="css/main.css" rel="stylesheet" />
+		
+		<script src="js/jquery-3.3.1.min.js"></script>
+		<script src="js/bootstrap-3.3.7.min.js"></script>
+		<script src="js/bootstrap-editable-1.5.0.min.js"></script>
+		
+		<title>Login</title>
+		
+		<script type="text/javascript">
+			
+			$(document).ready(function(){
+				//$.fn.editable.defaults.mode = 'inline';
+				
+				var canEdit = [];
+				canEdit.push('value');
+				canEdit.push('dataType');
+				
+				$('#btn_load').click(function(){
+					// Call ajax load links
+					var u = 'list_config.do';
+					var force = $('#force_load').is(':checked');
+					$.ajax({
+						url : u,
+						data: {force: force},
+						dataType: 'json'
+					}).done(function(result){
+						var arr = result;
+						if (!arr) {
+							return;
+						}
+						draw_link(arr, canEdit);
+					});
+				});
+				
+				$('div.links').on('click', '.details a', function(){
+					$('#txt_link').val($(this).text());
+				});
+				
+				$('#btn_add').click(function(){
+					var selector = $('#table_config tbody');
+					var newRow = getNewRowToAdd(canEdit);
+					selector.append(newRow);
+					var pos = selector.find('tr:last').position().top;
+					$('.table-responsive').scrollTop(pos);
+				});
+				$('#btn_del').click(function(){
+					var selector = $('#table_config tbody tr.bg-info');
+					selector.each(function(){
+						// Post to server
+						var u = 'list_config.do';
+						
+						var tr = $(this);
+						var obj = getRowObject(tr, 'delete');
+						obj['action'] = 'delete';
+						$.ajax({
+							url : u,
+							data: obj,
+							dataType: 'json'
+						}).done(function(result){
+							if (result != true) {
+								alert('Cannot delete: ' + JSON.stringify(obj));
+								return;
+							}
+							$('#btn_load').click();
+						});
+					});
+				});
+				
+				$('#table_config').on('click', 'a.editable', function(){
+					var id = $(this).parent().parent().find('td:first').text().trim();
+					$('#current_id').val(id);
+				});
+				
+				$('#table_config').on('click', 'input.submit-new', function(){
+					// Post to server
+					var u = 'list_config.do';
+					var tr = $(this).parent().parent();
+					var obj = getRowObject(tr, 'add');
+					obj['action'] = 'add';
+					$.ajax({
+						url : u,
+						data: obj,
+						dataType: 'json'
+					}).done(function(result){
+						if (result != true) {
+							alert('Cannot insert: ' + JSON.stringify(obj));
+							return;
+						}
+						$('#btn_load').click();
+					});
+				});
+				
+				// Click
+				$('#table_config').on('click', 'tr', function(event) {
+					$(this).addClass('bg-info').siblings().removeClass('bg-info');
+				});
+			});
+		</script>
+	</head>
+
+	<body>
+		<div class="container">
+			<h1>Login</h1>
+			<form class="form-signin" action="login.do" method="post" enctype="application/x-www-form-urlencoded">
+				<div class="form-group">
+					<label for="User">User name:</label>
+					<input type="text" class="form-control" placeholder="" name="txt_user" required autofocus />
+				</div>
+				<div class="form-group">
+					<label for="User">Password:</label>
+					<input type="password" class="form-control" placeholder="" name="txt_pass" required />
+					
+				</div>
+				<input type="submit" class="btn btn-primary btn-success" value="Login" id="btn_login" />
+			</form>
+			
+			<hr />
+			<div class="hidden">
+				<input type="hidden" id="current_id" />
+			</div>
+		</div>
+	</body>
+</html>
