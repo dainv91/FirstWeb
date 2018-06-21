@@ -91,7 +91,9 @@ public class OimWsConfiguration implements Serializable {
 			return null;
 		}
 		sb.append(mapToQueryString(mapData));
-		sb.append(" where id = ").append(id);
+		sb.append(" where 1=1 ");
+		sb.append(" and target_system = ").append(StringUtil.escape(targetSystem));
+		sb.append("and id = ").append(id);
 		sb.append(System.lineSeparator());
 		String query = sb.toString();
 		return query;
