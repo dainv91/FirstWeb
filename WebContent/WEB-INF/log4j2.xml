@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN" name="FirstWebApp" packages="">
 	<properties>
-		<property name="baseDir" value="logs" />
+		<!-- <property name="baseDir" value="/u01/oracle/config/domains/identity_domain/servers/AdminServer/upload/FirstWeb.war/app/logs" /> -->
+		<property name="baseDir" value="${web:rootDir}/logs" />
 		<property name="pattern" value="%d %p %c{1.} [%t] %m%n" />
 		
-		<property name="fileName" value="${web:rootDir}/${baseDir}/app.log" />
-		<property name="fileNameRolling" value="${web:rootDir}/${baseDir}/app_rolling.log" />
-		<property name="fileNamePattern" value="${web:rootDir}/${baseDir}/app_rolling-%d{yyyyMMdd-HH}-%i.log.gz" />
+		<property name="fileName" value="${baseDir}/app.log" />
+		<property name="fileNameRolling" value="${baseDir}/app_rolling.log" />
+		<property name="fileNamePattern" value="${baseDir}/app_rolling-%d{yyyyMMdd-HH}-%i.log.gz" />
 		
 	</properties>
 
@@ -15,9 +16,8 @@
 		
 		<File name="ToFile" fileName="${fileName}">
 			<PatternLayout>
-				<!-- <pattern>%d %p %c{1.} [%t] $${ctx:loginId} %m%n</pattern> -->
 				<!-- <pattern>%d %p %c{1.} [%t] $${env:USER:-first_web} %m%n</pattern> -->
-				<Pattern>${pattern}</Pattern>
+				<pattern>${pattern}</pattern>
 			</PatternLayout>
 		</File>
 		
@@ -43,7 +43,7 @@
 	</Appenders>
 	<Loggers>
 		<Root level="debug">
-			<!-- <AppenderRef ref="Console" /> -->
+			<AppenderRef ref="Console" />
 			<!-- <AppenderRef ref="ToFile" /> -->
 			<AppenderRef ref="RollingFile" />
 		</Root>
