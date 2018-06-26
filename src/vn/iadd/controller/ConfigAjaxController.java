@@ -11,10 +11,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import vn.iadd.helper.DbHelper;
 import vn.iadd.model.DataShared;
 import vn.iadd.model.OimWsConfiguration;
 import vn.iadd.util.JsonUtil;
+import vn.iadd.util.LogUtil;
 import vn.iadd.util.ObjectUtil;
 import vn.iadd.util.StringUtil;
 
@@ -24,6 +28,8 @@ public class ConfigAjaxController extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	final Logger logger = LogManager.getLogger(this.getClass());
+	
 	private static String targetSystem; 
 
 	@Override
@@ -72,6 +78,7 @@ public class ConfigAjaxController extends HttpServlet {
 		resp.setContentType("application/json");
 		resp.setCharacterEncoding("UTF-8");
 		
+		LogUtil.info(logger, "ConfigAjax action: [{}], key: [{}], name: [{}], value: [{}]", action, keyStr, name, value);
 		if (action != null) {
 			if (action.equalsIgnoreCase("update")) {
 				boolean updated = DataShared.updateConfig(getDbHelper(), targetSystem, key, name, value);

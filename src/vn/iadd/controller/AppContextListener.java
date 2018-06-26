@@ -5,13 +5,19 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import vn.iadd.helper.DbHelper;
 import vn.iadd.model.DataShared;
 import vn.iadd.util.ConfigUtils;
+import vn.iadd.util.LogUtil;
 import vn.iadd.util.ObjectUtil;
 
 @WebListener
 public class AppContextListener implements ServletContextListener {
+	
+	final Logger logger = LogManager.getLogger(this.getClass());
 	
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
@@ -20,6 +26,7 @@ public class AppContextListener implements ServletContextListener {
 		
 		// 1. Load configuration file
 		ConfigUtils.loadProp(ctx.getResourceAsStream(path));
+		LogUtil.info(logger, "Configurations: [{}]", ConfigUtils.getConfigs());
 		//System.out.println(ConfigUtils.CONFIG_NAME + " loaded.");
 		
 		// 2. Create DbHelper object
@@ -27,6 +34,7 @@ public class AppContextListener implements ServletContextListener {
 		
 		// 3. Load data first
 		final String target = ctx.getInitParameter("TARGET_SYSTEM");
+		LogUtil.info(logger, "Target system [{}]", target);
 		DataShared.load(dbHelper, target);
 		
 		// 4. Store DbHelper object to Servlet context

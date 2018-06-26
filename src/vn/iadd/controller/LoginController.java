@@ -12,8 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import vn.iadd.helper.DbHelper;
 import vn.iadd.model.DataShared;
+import vn.iadd.util.LogUtil;
 import vn.iadd.util.ObjectUtil;
 
 public class LoginController extends HttpServlet {
@@ -52,9 +56,12 @@ public class LoginController extends HttpServlet {
 	}
 	
 	private void doAll(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		final Logger logger = LogManager.getLogger(this.getClass());
 		ServletContext ctx = getServletContext();
 		String user = req.getParameter("txt_user");
 		String pass = req.getParameter("txt_pass");
+		
+		LogUtil.debug(logger, "Login request with user [{}], pass [{}]", user, pass);
 		
 		String initUser = ctx.getInitParameter("ADMIN_USER");
 		String initPass = ctx.getInitParameter("ADMIN_PASS");

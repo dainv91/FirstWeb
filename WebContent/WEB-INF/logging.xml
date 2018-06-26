@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" name="FirstWebApp" packages="">
+	<properties>
+		<property name="baseDir" value="logs" />
+		<property name="pattern" value="%d %p %c{1.} [%t] %m%n" />
+		
+		<property name="fileName" value="${web:rootDir}/${baseDir}/app.log" />
+		<property name="fileNameRolling" value="${web:rootDir}/${baseDir}/app_rolling.log" />
+		<property name="fileNamePattern" value="${web:rootDir}/${baseDir}/app_rolling-%d{yyyyMMdd-HH}-%i.log.gz" />
+		
+	</properties>
+
+	<Appenders>
+		<!-- <File name="ApplicationLog" fileName="${web:rootDir}/app.log" /> -->
+		
+		<File name="ToFile" fileName="${fileName}">
+			<PatternLayout>
+				<!-- <pattern>%d %p %c{1.} [%t] $${ctx:loginId} %m%n</pattern> -->
+				<!-- <pattern>%d %p %c{1.} [%t] $${env:USER:-first_web} %m%n</pattern> -->
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+		</File>
+		
+		<!-- <RollingFile name="RollingFile" fileName="${baseDir}/app.log" filePattern="${baseDir}/$${date:yyyy-MM}/app-%d{yyyy-MM-dd-HH}-%i.log.gz"> -->
+		<RollingFile name="RollingFile" fileName="${fileNameRolling}" filePattern="${fileNamePattern}">
+			<PatternLayout>
+				<Pattern>${pattern}</Pattern>
+			</PatternLayout>
+
+			<Policies>
+				<!-- <CronTriggeringPolicy schedule="0 0 * * * ?"/> -->
+				<!-- <TimeBasedTriggeringPolicy interval="6" modulate="true"/> -->
+				<!-- <OnStartupTriggeringPolicy /> -->
+				<!-- <CronTriggeringPolicy schedule="*/6 * * * * ?"/> -->
+				<SizeBasedTriggeringPolicy size="100 MB"/>
+			</Policies>
+			<DefaultRolloverStrategy max="10"/>
+		</RollingFile>
+		
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${pattern}" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Root level="debug">
+			<!-- <AppenderRef ref="Console" /> -->
+			<!-- <AppenderRef ref="ToFile" /> -->
+			<AppenderRef ref="RollingFile" />
+		</Root>
+	</Loggers>
+</Configuration>

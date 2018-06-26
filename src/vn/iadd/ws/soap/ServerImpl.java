@@ -7,12 +7,12 @@ import java.util.Map;
 
 import javax.jws.WebService;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import vn.iadd.helper.DbHelper;
 import vn.iadd.model.DataShared;
+import vn.iadd.util.LogUtil;
 
 @WebService(endpointInterface = "vn.iadd.ws.soap.IServer")
 public class ServerImpl implements IServer {
@@ -28,11 +28,10 @@ public class ServerImpl implements IServer {
 	}
 	
 	void log(String msg) {
-		final String str =  Thread.currentThread().getName() + "<---" + this.getClass().getName() + "---->" + msg;
-		System.out.println(str);
+		//System.out.println(str);
 		//LogUtil.log(this, msg);
 		
-		logger.log(Level.DEBUG, str);
+		LogUtil.debug(logger, msg);
 	}
 
 	@Override
