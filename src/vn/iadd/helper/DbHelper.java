@@ -12,10 +12,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import vn.iadd.util.ConfigUtils;
+import vn.iadd.util.LogUtil;
 
 public class DbHelper implements AutoCloseable {
 
+	final Logger logger = LogManager.getLogger(this.getClass());
+	
 	private String url;
 	private String user;
 	private String pass;
@@ -47,7 +53,8 @@ public class DbHelper implements AutoCloseable {
 	}
 
 	void log(String msg) {
-		System.out.println(msg);
+		//System.out.println(msg);
+		LogUtil.log(logger, msg);
 	}
 	
 	boolean isEmpty(String str) {
