@@ -20,7 +20,7 @@ import vn.iadd.util.LogUtil;
 
 public class DbHelper implements AutoCloseable {
 
-	final Logger logger = LogManager.getLogger(this.getClass());
+	final Logger logger;
 	
 	private String url;
 	private String user;
@@ -50,6 +50,7 @@ public class DbHelper implements AutoCloseable {
 		this.url = url;
 		this.user = user;
 		this.pass = pass;
+		this.logger = LogManager.getLogger(this.getClass());
 	}
 
 	void log(String msg) {
@@ -118,6 +119,7 @@ public class DbHelper implements AutoCloseable {
 	 * @since 20180413
 	 */
 	public Map<String, List<Object>> execQuery(String query) {
+		log("QUERY_TO_EXEC: " + query);
 		Map<String, List<Object>> map = new LinkedHashMap<>();
 		Statement stmt = null;
 		try {
@@ -147,6 +149,7 @@ public class DbHelper implements AutoCloseable {
 		} finally {
 			closeIgnoreEx(stmt);
 		}
+		log("QUERY_RESULT: " + map.size());
 		return map;
 	}
 
@@ -159,6 +162,7 @@ public class DbHelper implements AutoCloseable {
 	 * @since 20180619
 	 */
 	public Map<String, Map<String, Object>> execQueryReturnMap(String query) {
+		log("QUERY_TO_EXEC: " + query);
 		Map<String, Map<String, Object>> map = new LinkedHashMap<>();
 		Statement stmt = null;
 		try {
@@ -189,6 +193,7 @@ public class DbHelper implements AutoCloseable {
 		} finally {
 			closeIgnoreEx(stmt);
 		}
+		log("QUERY_RESULT: " + map.size());
 		return map;
 	}
 	
