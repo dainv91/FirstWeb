@@ -3,6 +3,7 @@
 	<properties>
 		<!-- <property name="baseDir" value="/u01/oracle/config/domains/identity_domain/servers/AdminServer/upload/FirstWeb.war/app/logs" /> -->
 		<property name="baseDir" value="${web:rootDir}/logs" />
+		
 		<property name="pattern" value="%d %p %c{1.} [%t] %m%n" />
 		
 		<property name="fileName" value="${baseDir}/app.log" />
