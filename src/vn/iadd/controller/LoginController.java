@@ -47,7 +47,9 @@ public class LoginController extends HttpServlet {
 		PrintWriter out;
 		try {
 			out = resp.getWriter();
-			out.println("<font color=red>Either user name or password is wrong.</font>");
+			final String script = "<script>alert('Either user name or password is wrong');</script>";
+			//out.println("<font color=red>Either user name or password is wrong.</font>");
+			out.println(script);
 			rd.include(req, resp);
 		} catch (IOException | ServletException e) {
 			e.printStackTrace();
