@@ -86,6 +86,16 @@
     <url-pattern>/login.do</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <display-name>Logout servlet controller</display-name>
+    <servlet-name>logout</servlet-name>
+    <servlet-class>vn.iadd.controller.LogoutController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>logout</servlet-name>
+    <url-pattern>/logout.do</url-pattern>
+  </servlet-mapping>
+  
   <!-- Added 20180618 - log4j-->
  <!--  <context-param>  
        <param-name>contextConfigLocation</param-name>  

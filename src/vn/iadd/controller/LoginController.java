@@ -3,7 +3,6 @@ package vn.iadd.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -19,6 +18,8 @@ import vn.iadd.helper.DbHelper;
 import vn.iadd.model.DataShared;
 import vn.iadd.util.LogUtil;
 import vn.iadd.util.ObjectUtil;
+import vn.iadd.util.ServletUtil;
+import vn.iadd.util.StringUtil;
 
 public class LoginController extends HttpServlet {
 
@@ -41,20 +42,26 @@ public class LoginController extends HttpServlet {
 		ServletContext ctx = getServletContext();
 		return ObjectUtil.tryGetValue(ctx.getAttribute(DataShared.C_DB_HELPER), DbHelper.class);
 	}
-
-	private void wrongUserPass(HttpServletRequest req, HttpServletResponse resp) {
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
+	
+	private void sendViewOnly(HttpServletRequest req, HttpServletResponse resp) {
+		ServletUtil.sendViewIndex(getServletContext(), req, resp, "/index.html");
+	}
+	
+	private void wrongUserPass(HttpServletRequest req, HttpServletResponse resp, boolean needAdlert) {
 		PrintWriter out;
+		if (!needAdlert) {
+			sendViewOnly(req, resp);
+			return;
+		}
 		try {
 			out = resp.getWriter();
 			final String script = "<script>alert('Either user name or password is wrong');</script>";
 			//out.println("<font color=red>Either user name or password is wrong.</font>");
 			out.println(script);
-			rd.include(req, resp);
-		} catch (IOException | ServletException e) {
+			sendViewOnly(req, resp);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 	}
 	
 	private void doAll(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -68,17 +75,22 @@ public class LoginController extends HttpServlet {
 		String initUser = ctx.getInitParameter("ADMIN_USER");
 		String initPass = ctx.getInitParameter("ADMIN_PASS");
 		
+		if (StringUtil.isEmpty(user) && StringUtil.isEmpty(pass)) {
+			sendViewOnly(req, resp);
+			return;
+		}
+		
 		if (!initUser.equalsIgnoreCase(user)) {
-			wrongUserPass(req, resp);
+			wrongUserPass(req, resp, true);
 			return;
 		}
 		if (!initPass.equals(pass)) {
-			wrongUserPass(req, resp);
+			wrongUserPass(req, resp, true);
 			return;
 		}
 		HttpSession session = req.getSession();
 		session.setAttribute("user", user);
-		Cookie loginCookie = new Cookie("user",user);
+		Cookie loginCookie = new Cookie("user", user);
 		//setting cookie to expiry in 30 mins
 		loginCookie.setMaxAge(30*60);
 		resp.addCookie(loginCookie);
